@@ -14,5 +14,8 @@
     "call-automation"
   ],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
 }
