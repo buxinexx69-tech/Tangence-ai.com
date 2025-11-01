@@ -1,0 +1,18 @@
+{
+  "name": "tangence-ai",
+  "version": "1.0.0",
+  "description": "AI Call Receptionist Agent Platform",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "echo 'Static site - no build required'",
+    "preview": "vite preview"
+  },
+  "keywords": [
+    "ai",
+    "receptionist",
+    "call-automation"
+  ],
+  "author": "",
+  "license": "ISC"
+}
