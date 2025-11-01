@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tangence.AI - AI Call Receptionist Agents</title>
+    <meta name="description" content="AI-powered call receptionist agents for businesses. Automate calls, book appointments, and engage customers 24/7 with Tangence.AI">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Core Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/splitting@1.0.6/dist/splitting.css">
+    
+    <style>
+        :root {
+            --primary-dark: #0a0a0a;
+            --secondary-dark: #1a1a1a;
+            --accent-blue: #00d4ff;
+            --accent-green: #00ff88;
+            --accent-violet: #8b5cf6;
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--primary-dark);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Glass morphism effect */
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1rem 2rem;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-violet));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-blue);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary-dark) 100%);
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 50%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 2;
+            max-width: 800px;
+            padding: 0 2rem;
+        }
+
+        .hero h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .typed-text {
+            color: var(--accent-blue);
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-violet));
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(30px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        /* Hero Visual */
+        .hero-visual {
+            position: absolute;
+            right: 10%;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 300px;
+            height: 400px;
+            opacity: 0;
+        }
+
+        .phone-mockup {
+            width: 100%;
+            height: 100%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--secondary-dark), var(--primary-dark));
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .wave-animation {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border: 2px solid var(--accent-blue);
+            border-radius: 50%;
+            opacity: 0;
+            animation: wave 2s infinite;
+        }
+
+        .wave-animation:nth-child(2) {
+            animation-delay: 0.5s;
+            border-color: var(--accent-green);
+        }
+
+        .wave-animation:nth-child(3) {
+            animation-delay: 1s;
+            border-color: var(--accent-violet);
+        }
+
+        @keyframes wave {
+            0% {
+                transform: scale(0.5);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+
+        /* Sections */
+        .section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 3rem;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        /* How It Works */
+        .how-it-works {
+            background: var(--secondary-dark);
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .step {
+            text-align: center;
+            padding: 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.3s ease;
+        }
+
+        .step:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-blue);
+        }
+
+        .step-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-violet));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .step h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .step p {
+            color: var(--text-secondary);
+        }
+
+        /* Features */
+        .features {
+            background: var(--primary-dark);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            padding: 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-green), var(--accent-violet));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-blue);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .feature-card h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+        }
+
+        /* About Section */
+        .about {
+            background: var(--secondary-dark);
+        }
+
+        .about-content {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .about-content p {
+            font-size: 1.125rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        /* Contact Section */
+        .contact {
+            background: var(--primary-dark);
+        }
+
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 2rem;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-violet));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--secondary-dark);
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .footer p {
+            color: var(--text-secondary);
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                padding: 2rem 1rem;
+            }
+
+            .hero-visual {
+                position: static;
+                transform: none;
+                margin-top: 2rem;
+                width: 250px;
+                height: 300px;
+            }
+
+            .steps {
+                grid-template-columns: 1fr;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                padding: 3rem 1rem;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--glass-border);
+            border-top: 3px solid var(--accent-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-content">
+            <div class="logo">Tangence.AI</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#how-it-works">How It Works</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <button class="mobile-menu-toggle">☰</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                Your AI Call Receptionist — <br>
+                <span class="typed-text"></span>
+            </h1>
+            <p class="hero-subtitle">
+                Automate your business calls, book appointments, and engage customers effortlessly.
+            </p>
+            <a href="#contact" class="cta-button">Get Started</a>
+        </div>
+        
+        <div class="hero-visual">
+            <div class="phone-mockup">
+                <div class="phone-screen">
+                    <div class="wave-animation"></div>
+                    <div class="wave-animation"></div>
+                    <div class="wave-animation"></div>
+                    <div style="color: var(--accent-blue); font-size: 1.5rem; font-weight: 600;">
+                        AI Active
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="section how-it-works">
+        <h2 class="section-title">How It Works</h2>
+        <div class="steps">
+            <div class="step">
+                <div class="step-icon">1</div>
+                <h3>Connect Your Business Number</h3>
+                <p>Integrate your existing phone system with our AI platform seamlessly. No hardware changes required.</p>
+            </div>
+            <div class="step">
+                <div class="step-icon">2</div>
+                <h3>AI Handles Customer Calls</h3>
+                <p>Our intelligent receptionist answers calls, qualifies leads, and schedules appointments 24/7.</p>
+            </div>
+            <div class="step">
+                <div class="step-icon">3</div>
+                <h3>Receive Data Instantly</h3>
+                <p>Get real-time notifications and detailed reports about every customer interaction.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="section features">
+        <h2 class="section-title">Features</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🕐</div>
+                <h3>24/7 AI Receptionist</h3>
+                <p>Never miss a call again. Our AI is always available to handle customer inquiries and provide professional service.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📅</div>
+                <h3>Smart Appointment Handling</h3>
+                <p>Intelligently schedule appointments, send confirmations, and manage calendar integration with your existing systems.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>Customer Qualification</h3>
+                <p>Automatically qualify leads based on your criteria, ensuring you focus on high-value prospects.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📞</div>
+                <h3>SIP/VoIP Integration</h3>
+                <p>Seamlessly integrate with your existing business phone system without disrupting your current workflow.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section about">
+        <h2 class="section-title">About Tangence.AI</h2>
+        <div class="about-content">
+            <p>
+                Empowering businesses with AI-driven call automation to save time, reduce human error, and increase customer satisfaction. 
+                Our mission is to make professional call handling accessible to businesses of all sizes.
+            </p>
+            <p>
+                Founded by industry experts with decades of experience in telecommunications and AI, Tangence.AI represents the future of business communication.
+            </p>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section contact">
+        <h2 class="section-title">Schedule Your AI Receptionist Demo</h2>
+        <div class="contact-form">
+            <form id="demoForm">
+                <div class="form-group">
+                    <label for="name">Name *</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="tel" id="phone" name="phone">
+                </div>
+                <div class="form-group">
+                    <label for="business">Business Name *</label>
+                    <input type="text" id="business" name="business" required>
+                </div>
+                <button type="submit" class="submit-button">Schedule Demo</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 Tangence.AI. All rights reserved. | Contact: tanbossx@tangence-ai.com | +917028626352</p>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>
